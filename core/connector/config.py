@@ -9,6 +9,7 @@ class LlmProvider(StrEnum):
 class DbProvider(StrEnum):
     MYSQL = "mysql"
     POSTGRESQL = "postgresql"
+    SQLITE = "sqlite"
 
 
 class AppSettings(BaseSettings):
@@ -17,4 +18,4 @@ class AppSettings(BaseSettings):
         extra="ignore"
     )
     llm_provider: LlmProvider = LlmProvider.LM_STUDIO
-    db_provider: DbProvider = DbProvider.POSTGRESQL
+    db_provider: DbProvider = DbProvider.SQLITE
