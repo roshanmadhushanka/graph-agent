@@ -8,7 +8,7 @@ class Message(TypedDict):
 
 @runtime_checkable
 class Conversational(Protocol):
-    def ask(self, user: str, *, system: str | None = None) -> str: ...
+    def ask(self, user: str, *, system: str | None = None, history: list[Message] | None = None) -> str: ...
 
 
 @runtime_checkable

@@ -4,6 +4,9 @@ from core.connector.llm.base import LlmSettings, LlmConnector
 from core.connector.config import LlmProvider
 from openai.types.chat import ChatCompletionMessageParam
 from openai import OpenAI
+from typing import cast
+
+from core.protocols import Message
 
 
 class LmStudioSettings(LlmSettings):
@@ -31,10 +34,12 @@ class LmStudioConnector(LlmConnector):
     def provider(self) -> LlmProvider:
         return LlmProvider.LM_STUDIO
 
-    def ask(self, user: str, *, system: str | None = None) -> str:
+    def ask(self, user: str, *, system: str | None = None, history: list[Message] | None = None) -> str:
         messages: list[ChatCompletionMessageParam] = []
         if system:
             messages.append({"role": "system", "content": system})
+        messages.extend(
+            cast(ChatCompletionMessageParam, {"role": msg["role"], "content": msg["content"]}) for msg in history or [])
         messages.append({"role": "user", "content": user})
 
         response = self._client.chat.completions.create(

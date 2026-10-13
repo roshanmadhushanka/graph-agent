@@ -2,7 +2,7 @@ from pydantic import SecretStr
 from pydantic_settings import BaseSettings
 from abc import ABC, abstractmethod
 
-from config import LlmProvider
+from core.connector.config import LlmProvider
 
 
 class LlmSettings(BaseSettings):
