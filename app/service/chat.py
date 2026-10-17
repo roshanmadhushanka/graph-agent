@@ -1,14 +1,15 @@
-from core.protocols import Conversational, ConversationStore
+from core.protocols import Conversational, ConversationStore, Message
+from langgraph.checkpoint.base import BaseCheckpointSaver
+from app.graph import build_chat_graph
 
 class ChatService:
-    def __init__(self, llm: Conversational, store: ConversationStore, system: str | None = None) -> None:
-        self._llm = llm
-        self._store = store
-        self._system = system
+    def __init__(self, llm: Conversational, checkpointer: BaseCheckpointSaver, system: str | None = None) -> None:
+        self._graph = build_chat_graph(llm, checkpointer, system)
 
-    def send(self, conversation_id: str, prompt: str) -> str:
-        history = self._store.history(conversation_id)
-        answer = self._llm.ask(prompt, system=self._system, history=history)
-        self._store.save(conversation_id, "user", prompt)
-        self._store.save(conversation_id, "assistant", answer)
-        return answer
+    def send(self, conversation_id: str, role: str, prompt: str) -> str:
+       result = self._graph.invoke(
+           {"messages": [Message(role=role, content=prompt)]},
+           config={"configurable": {"thread_id": conversation_id}}
+       )
+       return result["messages"][-1]["content"]
+

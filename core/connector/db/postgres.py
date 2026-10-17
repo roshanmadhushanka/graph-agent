@@ -1,8 +1,10 @@
 import psycopg
+from psycopg.rows import dict_row
 from pydantic import SecretStr
 from pydantic_settings import SettingsConfigDict
 from core.connector.db.base import DbSettings
 from core.protocols import Message
+from langgraph.checkpoint.postgres import PostgresSaver
 
 
 class PostgresSettings(DbSettings):
@@ -16,6 +18,23 @@ class PostgresSettings(DbSettings):
     user: str
     password: SecretStr
     database: str
+
+
+def create_postgres_checkpointer(settings: PostgresSettings | None = None) -> PostgresSaver:
+    settings = settings or PostgresSettings()
+    conn = psycopg.connect(
+        host=settings.host,
+        port=settings.port,
+        user=settings.user,
+        password=settings.password.get_secret_value(),
+        dbname=settings.database,
+        autocommit=True,
+        prepare_threshold=0,
+        row_factory=dict_row
+    )
+    checkpointer = PostgresSaver(conn)
+    checkpointer.setup()
+    return checkpointer
 
 
 class PostgresConversationStore:
@@ -32,13 +51,36 @@ class PostgresConversationStore:
         with self._conn.cursor() as cur:
             cur.execute(
                 """
-                CREATE TABLE IF NOT EXISTS messages (
-                    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                    conversation_id TEXT NOT NULL,
-                    role TEXT NOT NULL,
-                    content TEXT NOT NULL,
-                    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+                CREATE TABLE IF NOT EXISTS messages
+                (
+                    id
+                    BIGINT
+                    GENERATED
+                    ALWAYS AS
+                    IDENTITY
+                    PRIMARY
+                    KEY,
+                    conversation_id
+                    TEXT
+                    NOT
+                    NULL,
+                    role
+                    TEXT
+                    NOT
+                    NULL,
+                    content
+                    TEXT
+                    NOT
+                    NULL,
+                    created_at
+                    TIMESTAMPTZ
+                    NOT
+                    NULL
+                    DEFAULT
+                    now
+                (
                 )
+                    )
                 """
             )
             cur.execute(
@@ -50,7 +92,8 @@ class PostgresConversationStore:
         with self._conn.cursor() as cur:
             cur.execute(
                 """
-                INSERT INTO messages (conversation_id, role, content) VALUES (%s, %s, %s)""",
+                INSERT INTO messages (conversation_id, role, content)
+                VALUES (%s, %s, %s)""",
                 (conversation_id, role, content),
             )
 
@@ -58,7 +101,10 @@ class PostgresConversationStore:
         with self._conn.cursor() as cur:
             cur.execute(
                 """
-                SELECT role, content FROM messages WHERE conversation_id = %s ORDER BY id ASC""",
+                SELECT role, content
+                FROM messages
+                WHERE conversation_id = %s
+                ORDER BY id ASC""",
                 (conversation_id,)
             )
             return [Message(role=role, content=content) for role, content in cur.fetchall()]

@@ -10,6 +10,7 @@ class DbProvider(StrEnum):
     MYSQL = "mysql"
     POSTGRESQL = "postgresql"
     SQLITE = "sqlite"
+    MEMORY = "memory"
 
 
 class AppSettings(BaseSettings):
