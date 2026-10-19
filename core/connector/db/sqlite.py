@@ -1,7 +1,7 @@
 import sqlite3
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from core.protocols import Message
+from app.protocols import Message
 
 
 class SqliteSettings(BaseSettings):

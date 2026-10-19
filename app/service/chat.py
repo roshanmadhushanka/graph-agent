@@ -1,4 +1,4 @@
-from core.protocols import Conversational, ConversationStore, Message
+from app.protocols import Conversational, Message
 from langgraph.checkpoint.base import BaseCheckpointSaver
 from app.graph import build_chat_graph
 

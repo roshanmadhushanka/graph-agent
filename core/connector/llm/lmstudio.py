@@ -6,7 +6,7 @@ from openai.types.chat import ChatCompletionMessageParam
 from openai import OpenAI
 from typing import cast
 
-from core.protocols import Message
+from app.protocols import Message
 
 
 class LmStudioSettings(LlmSettings):

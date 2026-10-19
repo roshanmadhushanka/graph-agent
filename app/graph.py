@@ -4,7 +4,7 @@ from typing import Annotated, TypedDict, Literal, NotRequired
 from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.graph import END, START, StateGraph
 
-from core.protocols import Conversational, Message
+from app.protocols import Conversational, Message
 
 SUMMARIZE_PROMPT = """
     You maintain a running summary of a conversation. Merge the existing summary with the new messages into one concise summary.

@@ -3,7 +3,7 @@ from psycopg.rows import dict_row
 from pydantic import SecretStr
 from pydantic_settings import SettingsConfigDict
 from core.connector.db.base import DbSettings
-from core.protocols import Message
+from app.protocols import Message
 from langgraph.checkpoint.postgres import PostgresSaver
 
 

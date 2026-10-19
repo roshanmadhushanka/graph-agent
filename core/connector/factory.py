@@ -8,7 +8,7 @@ from core.connector.config import DbProvider
 from core.connector.db.postgres import PostgresConversationStore, create_postgres_checkpointer
 from core.connector.db.sqlite import SqliteConversationStore
 from core.connector.llm.lmstudio import LmStudioConnector
-from core.protocols import Conversational, ConversationStore
+from app.protocols import Conversational, ConversationStore
 
 _LLM: dict[LlmProvider, Callable[[], Conversational]] = {
     LlmProvider.LM_STUDIO: LmStudioConnector
