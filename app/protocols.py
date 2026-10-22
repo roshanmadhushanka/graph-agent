@@ -19,6 +19,7 @@ class Message(TypedDict):
 class Conversational(Protocol):
     def ask(self, user: str, *, system: str | None = None, history: list[Message] | None = None) -> str: ...
 
+    def ask_with_tools(self, messages: list[Message], tools: list[Tool], *, system: str | None = None) -> Message: ...
 
 @runtime_checkable
 class ConversationStore(Protocol):

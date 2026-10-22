@@ -2,13 +2,15 @@ import sys
 
 from app.service.chat import ChatService
 from core.connector.factory import create_llm, create_checkpointer
+from app.tools import TOOLS
 
 def main() -> None:
     conversation_id = sys.argv[1] if len(sys.argv) > 1 else "default"
     chat = ChatService(
         llm=create_llm(),
         checkpointer=create_checkpointer(),
-        system="You are a helpful assistant."
+        system="You are a concise assistant. Use tools for time and math.",
+        tools=TOOLS,
     )
 
     print(f"Conversation {conversation_id}. Type 'exit' to quit.")

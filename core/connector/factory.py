@@ -8,9 +8,9 @@ from core.connector.config import DbProvider
 from core.connector.db.postgres import PostgresConversationStore, create_postgres_checkpointer
 from core.connector.db.sqlite import SqliteConversationStore
 from core.connector.llm.lmstudio import LmStudioConnector
-from app.protocols import Conversational, ConversationStore
+from app.protocols import Conversational, ConversationStore, AgentModel
 
-_LLM: dict[LlmProvider, Callable[[], Conversational]] = {
+_LLM: dict[LlmProvider, Callable[[], AgentModel]] = {
     LlmProvider.LM_STUDIO: LmStudioConnector
 }
 
@@ -25,7 +25,7 @@ _CHECKPOINT: dict[DbProvider, Callable[[], BaseCheckpointSaver]] = {
 }
 
 
-def create_llm(provider: LlmProvider | None = None) -> Conversational:
+def create_llm(provider: LlmProvider | None = None) -> AgentModel:
     return _LLM[provider or AppSettings().llm_provider]()
 
 

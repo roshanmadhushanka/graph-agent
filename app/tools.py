@@ -16,6 +16,7 @@ class Tool:
 
 
 def get_current_time(timezone: str) -> str:
+    print("Calling tool: get_current_time")
     return datetime.now(ZoneInfo(timezone)).strftime("%Y-%m-%d %H:%M:%S %Z")
 
 
@@ -41,6 +42,7 @@ def _evaluate(node: ast.AST) -> Any:
 
 
 def calculate(expression: str) -> str:
+    print("Calling tool: calculate")
     return str(_evaluate(ast.parse(expression, mode="eval").body))
 
 
